@@ -10,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -18,12 +17,10 @@ import java.util.HashMap;
 
 
 @Service
-@ContextConfiguration(classes = {RestTemplateConfig.class, HttpClientConfig.class})
 public class RestService {
 
 
     private static RestTemplate restTemplate;
-
 
     @Value("${tatoeba.url}")
     public String tatoebaUrl;

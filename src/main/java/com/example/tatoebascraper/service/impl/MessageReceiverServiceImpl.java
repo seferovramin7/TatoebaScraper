@@ -9,7 +9,6 @@ import com.example.tatoebascraper.telegram.update.TelegramResponseDTO;
 import com.example.tatoebascraper.telegram.update.TelegramUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -66,7 +65,7 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
     }
 
     @Override
-    public SendMessageResponseDTO reply(TelegramUpdateDTO telegramUpdateDTO) throws IOException, ParseException, JSONException {
+    public SendMessageResponseDTO reply(TelegramUpdateDTO telegramUpdateDTO) throws IOException, ParseException {
         // check it is private or group chat
         if (telegramUpdateDTO.getMessageDTO().getChat().getType().equals("group")) {
             String callName = "@" + botName;
