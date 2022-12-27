@@ -2,8 +2,6 @@ package com.example.tatoebascraper.service.impl;
 
 
 import com.example.tatoebascraper.entity.SearchParameter;
-import com.example.tatoebascraper.repository.TurboMakeRepository;
-import com.example.tatoebascraper.repository.TurboModelRepository;
 import com.example.tatoebascraper.telegram.send.text.NotificationDTO;
 import com.example.tatoebascraper.util.CarTypeMapper;
 import com.example.tatoebascraper.util.URLcreator;
@@ -25,12 +23,6 @@ public class RequestCreationService {
 
     @Autowired
     RestService restService;
-
-    @Autowired
-    TurboMakeRepository turboMakeRepository;
-
-    @Autowired
-    TurboModelRepository turboModelRepository;
 
 
     public List<NotificationDTO> createRequest(SearchParameter searchParameter) throws IOException, ParseException {

@@ -1,13 +1,10 @@
 package com.example.tatoebascraper.service.impl;
 
-import com.example.tatoebascraper.constant.ChatStage;
 import com.example.tatoebascraper.entity.Chat;
-import com.example.tatoebascraper.entity.SearchParameter;
-import com.example.tatoebascraper.repository.SpecificVehicleRepository;
-import com.example.tatoebascraper.repository.TurboMakeRepository;
-import com.example.tatoebascraper.repository.TurboModelRepository;
-import com.example.tatoebascraper.service.*;
-import com.example.tatoebascraper.telegram.send.KeyboardButtonDTO;
+import com.example.tatoebascraper.service.ChatDataService;
+import com.example.tatoebascraper.service.HttpRequestService;
+import com.example.tatoebascraper.service.MessageReceiverService;
+import com.example.tatoebascraper.service.SearchParameterService;
 import com.example.tatoebascraper.telegram.send.ReplyKeyboardRemoveDTO;
 import com.example.tatoebascraper.telegram.send.SendMessageResponseDTO;
 import com.example.tatoebascraper.telegram.send.text.SendMessageDTO;
@@ -22,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.List;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -32,14 +29,7 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
 
     private final HttpRequestService httpRequestService;
     private final ChatDataService chatDataService;
-    private final MessageProvider messageProvider;
-    private final MakeService makeService;
-    private final ModelService modelService;
     private final SearchParameterService searchParameterService;
-    private final RequestCreationService requestCreationService;
-    private final SpecificVehicleRepository specificVehicleRepository;
-    private final TurboMakeRepository makeRepository;
-    private final TurboModelRepository modelRepository;
     @Autowired
     RestService restService;
     @Value("${telegram.api.base-url}")
@@ -100,56 +90,21 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
         Long messageId = telegramUpdateDTO.getMessageDTO().getMessageId();
         Chat chat = chatDataService.getChatByChatId(chatId);
 
+        HashMap translated = restService.findTranslate("eng", "tur", text, 10);
 
-        if (chat.getChatStage() == ChatStage.START) {
-            return sendMessage(getStartMessage(chatId));
-        }
+        sendMessage(getTranslatedMessage(chatId, translated));
         return null;
     }
 
 
-    private SendMessageDTO getStartMessage(Long chatId) {
-        String text = "Nümunə cümlə tapmaq istədiyiniz sözü daxil edin";
-        SendMessageDTO sendMessageDTO = new SendMessageDTO();
-        sendMessageDTO.setChatId(chatId);
-        sendMessageDTO.setText(text);
-        sendMessageDTO.setReplyKeyboard(new ReplyKeyboardRemoveDTO(true));
-        return sendMessageDTO;
-    }
-
-
-    private SendMessageDTO getReadyMessage(Long chatId, SearchParameter searchParameter) {
-        String text = "Daxil olunan parametrlər əsasında axtarış başlandı :" + " \n"
-                + "Çıxış nöqtəsi : " + searchParameter.getFromWhereRaw() + " \n"
-                + "İstiqamət : " + searchParameter.getToWhereRaw() + " \n"
-                + "Tarix : " + searchParameter.getDate() + " \n"
-                + "Saat : " + (searchParameter.getTime().equals("0") ? "Günün istənilən saatı" : searchParameter.getTime()) + " \n";
+    private SendMessageDTO getTranslatedMessage(Long chatId, HashMap translated) {
+        String text = translated.values().stream().findFirst().get() + "\n" +
+                translated.keySet().stream().findFirst().get();
 
         SendMessageDTO sendMessageDTO = new SendMessageDTO();
         sendMessageDTO.setChatId(chatId);
         sendMessageDTO.setText(text);
         sendMessageDTO.setReplyKeyboard(new ReplyKeyboardRemoveDTO(true));
         return sendMessageDTO;
-    }
-
-    private SendMessageDTO getDeleteMessage(Long chatId) {
-        List<SearchParameter> searchParameterList = searchParameterService.getSearchParameter(chatId);
-        KeyboardButtonDTO[][] buttons = new KeyboardButtonDTO[searchParameterList.size()][];
-        for (int i = 0; i < searchParameterList.size(); i++) {
-            buttons[i] = new KeyboardButtonDTO[1];
-            for (int j = 0; j < 1; j++) {
-                buttons[i][j] = new KeyboardButtonDTO(
-                        searchParameterList.get(i + j).getFromWhereRaw()
-                                + "\n > " +
-                                searchParameterList.get(i + j).getToWhereRaw()
-                                + "\n"
-                                + searchParameterList.get(i + j).getDate() + ";"
-                                + "\n"
-                                + searchParameterList.get(i + j).getTime()
-
-                );
-            }
-        }
-        return null;
     }
 }

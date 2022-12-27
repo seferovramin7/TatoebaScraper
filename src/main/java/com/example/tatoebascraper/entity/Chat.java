@@ -1,7 +1,6 @@
 package com.example.tatoebascraper.entity;
 
 import com.example.tatoebascraper.constant.ChatStage;
-import com.example.tatoebascraper.constant.Currency;
 import com.example.tatoebascraper.constant.Language;
 import lombok.Data;
 
@@ -43,13 +42,5 @@ public class Chat {
     @Column(name = "CHAT_STAGE", length = 25)
     @Enumerated(EnumType.STRING)
     private ChatStage chatStage;
-
-    @Column(name = "LANGUAGE", length = 3)
-    @Enumerated(EnumType.STRING)
-    private Language language;
-
-    @Column(name = "CURRENCY", length = 3)
-    @Enumerated(EnumType.STRING)
-    private Currency currency;
 
 }
