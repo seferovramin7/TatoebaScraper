@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 
 @Service
@@ -41,10 +39,10 @@ public class RestService {
             String url = tatoebaUrl + "from=" + from + "&query=" + word + "&to=" + to + "&page=" + (page - i);
             System.out.println(url);
             Document doc = Jsoup.connect(url).get();
-              elements = doc.select(xpath);
+            elements = doc.select(xpath);
             boolean b = elements.hasAttr("ng-init");
             System.out.println("ng-init " + b);
-            if (b){
+            if (b) {
                 String attr = elements.attr("ng-init");
                 System.out.println(attr);
                 String[] s1 = attr.split("vm.init\\(\\[],");

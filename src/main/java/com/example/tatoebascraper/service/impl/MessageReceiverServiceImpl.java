@@ -1,10 +1,7 @@
 package com.example.tatoebascraper.service.impl;
 
-import com.example.tatoebascraper.entity.Chat;
-import com.example.tatoebascraper.service.ChatDataService;
 import com.example.tatoebascraper.service.HttpRequestService;
 import com.example.tatoebascraper.service.MessageReceiverService;
-import com.example.tatoebascraper.service.SearchParameterService;
 import com.example.tatoebascraper.telegram.send.ReplyKeyboardRemoveDTO;
 import com.example.tatoebascraper.telegram.send.SendMessageResponseDTO;
 import com.example.tatoebascraper.telegram.send.text.SendMessageDTO;
@@ -28,8 +25,6 @@ import java.util.regex.Pattern;
 public class MessageReceiverServiceImpl implements MessageReceiverService {
 
     private final HttpRequestService httpRequestService;
-    private final ChatDataService chatDataService;
-    private final SearchParameterService searchParameterService;
     @Autowired
     RestService restService;
     @Value("${telegram.api.base-url}")
@@ -53,7 +48,6 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
                 TelegramUpdateDTO telegramUpdateDTO = telegramResponseDTO.getResult().get(0);
                 log.info(telegramUpdateDTO.toString());
                 telegramUpdateDTO.getMessageDTO().setDate(telegramUpdateDTO.getMessageDTO().getDate() * 1000);
-                chatDataService.saveTelegramMessage(telegramUpdateDTO);
                 offset = telegramUpdateDTO.getUpdateId() + 1;
                 return telegramUpdateDTO;
             } else {
@@ -88,7 +82,6 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
         Long chatId = telegramUpdateDTO.getMessageDTO().getChat().getId();
         String text = telegramUpdateDTO.getMessageDTO().getText().trim();
         Long messageId = telegramUpdateDTO.getMessageDTO().getMessageId();
-        Chat chat = chatDataService.getChatByChatId(chatId);
 
         HashMap translated = restService.findTranslate("eng", "tur", text, 10);
 
