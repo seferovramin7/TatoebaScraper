@@ -20,7 +20,6 @@ public class BotSchedule {
 
     private final MessageReceiverService messageReceiverService;
 
-
     @Scheduled(fixedRateString = "500")
     public void getTelegramUpdates() throws JSONException, IOException, ParseException {
         TelegramUpdateDTO telegramUpdateDTO = messageReceiverService.getUpdates();
