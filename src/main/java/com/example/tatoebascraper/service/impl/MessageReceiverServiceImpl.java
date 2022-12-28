@@ -82,7 +82,7 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
         String text = telegramUpdateDTO.getMessageDTO().getText().trim();
         Long messageId = telegramUpdateDTO.getMessageDTO().getMessageId();
 
-        HashMap translated = restService.findTranslate("eng", "tur", text, 10);
+        HashMap translated = restService.findTranslate("eng", "tur", text, 2);
 
         sendMessage(getTranslatedMessage(chatId, translated));
         return null;

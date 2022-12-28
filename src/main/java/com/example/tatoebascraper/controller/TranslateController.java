@@ -17,8 +17,8 @@ public class TranslateController {
     private final RestService restService;
 
     @GetMapping
-    public String translate(@RequestParam String from, @RequestParam String to, @RequestParam String word) throws IOException {
-        HashMap translated = restService.findTranslate(from, to, word, 10);
+    public String translate(@RequestParam String from, @RequestParam String to, @RequestParam String word, @RequestParam int complexity) throws IOException {
+        HashMap translated = restService.findTranslate(from, to, word, complexity);
         return translated.keySet().stream().findFirst().get() + "\n" + translated.values().stream().findFirst().get();
     }
 }
