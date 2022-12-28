@@ -4,7 +4,6 @@ import com.example.tatoebascraper.service.MessageReceiverService;
 import com.example.tatoebascraper.telegram.update.TelegramUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class BotSchedule {
     private final MessageReceiverService messageReceiverService;
 
     @Scheduled(fixedRateString = "500")
-    public void getTelegramUpdates() throws JSONException, IOException, ParseException {
+    public void getTelegramUpdates() throws   IOException, ParseException {
         TelegramUpdateDTO telegramUpdateDTO = messageReceiverService.getUpdates();
         if (telegramUpdateDTO != null) {
             log.info(telegramUpdateDTO.toString());

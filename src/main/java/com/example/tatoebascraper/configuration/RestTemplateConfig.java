@@ -1,7 +1,6 @@
 package com.example.tatoebascraper.configuration;
 
 
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +20,6 @@ import java.util.List;
 @Configuration
 public class RestTemplateConfig {
 
-    @Autowired
-    CloseableHttpClient httpClient;
 
     @Bean
     public RestTemplate restTemplate() {
@@ -31,7 +28,7 @@ public class RestTemplateConfig {
         Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("10.0.3.18", 3128));
         requestFactory.setProxy(proxy);
 
-        RestTemplate restTemplate = new RestTemplate(clientHttpRequestFactory());
+        RestTemplate restTemplate = new RestTemplate();
         ClientHttpRequestInterceptor ri = new LoggingRequestInterceptor();
         List<ClientHttpRequestInterceptor> ris = new ArrayList<ClientHttpRequestInterceptor>();
         ris.add(ri);
@@ -39,12 +36,7 @@ public class RestTemplateConfig {
         return restTemplate;
     }
 
-    @Bean
-    public HttpComponentsClientHttpRequestFactory clientHttpRequestFactory() {
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        clientHttpRequestFactory.setHttpClient(httpClient);
-        return clientHttpRequestFactory;
-    }
+
 
     @Bean
     public TaskScheduler taskScheduler() {
