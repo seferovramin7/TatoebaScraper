@@ -8,6 +8,7 @@ class TatoebaScraperApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
 }
