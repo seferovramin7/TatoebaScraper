@@ -19,31 +19,36 @@ public class RestService {
     @Value("${tatoeba.url}")
     public String tatoebaUrl;
 
+    int limit;
 
     public HashMap findTranslate(String from, String to, String word) throws IOException {
+         limit = 3;
         HashMap<String, String> response = new HashMap<String, String>();
         String xpath = "html > body.responsive > div#content > div.container > section > md-content.md-whiteframe-1dp" +
                 " > div.sentence-and-translations.md-whiteframe-1dp";
         Elements elements = null;
         int page = (int) Math.floor((Math.random() * 3) + 1);
         int wordOfPage = (int) Math.floor((Math.random() * 10));
-        HashMap<String, String> response1 = getStringStringHashMap(from, to, word, response, xpath, page, wordOfPage);
+        HashMap<String, String> response1 = recursiveMethod(from, to, word, response, xpath, page, wordOfPage);
         if (response1 != null) return response1;
         response.put("Translation not found", "");
         return response;
     }
 
-    private HashMap<String, String> getStringStringHashMap(String from, String to, String word, HashMap<String, String> response, String xpath, int page, int wordOfPage) throws IOException {
-        try {
-            HashMap<String, String> response1 = getMap(from, to, word, response, xpath, page, wordOfPage);
-            if (response1 != null) return response1;
-        } catch (Exception e) {
-            wordOfPage = (int) Math.floor((Math.random() * 3) + 1);
-            page = (int) Math.floor((Math.random() * 10));
-            HashMap<String, String> response1 = getStringStringHashMap(from, to, word, response, xpath, page, wordOfPage);
-            if (response1 != null) return response1;
-            response.put("Translation not found", "");
-            return response;
+    private HashMap<String, String> recursiveMethod(String from, String to, String word, HashMap<String, String> response, String xpath, int page, int wordOfPage) throws IOException {
+        limit--;
+        if (limit > 0) {
+            try {
+                HashMap<String, String> response1 = getMap(from, to, word, response, xpath, page, wordOfPage);
+                if (response1 != null) return response1;
+            } catch (Exception e) {
+                wordOfPage = (int) Math.floor((Math.random() * 3) + 1);
+                page = (int) Math.floor((Math.random() * 10));
+                HashMap<String, String> response1 = recursiveMethod(from, to, word, response, xpath, page, wordOfPage);
+                if (response1 != null) return response1;
+                response.put("Translation not found", "");
+                return response;
+            }
         }
         return null;
     }

@@ -45,8 +45,6 @@ public class MessageReceiverServiceImpl implements MessageReceiverService {
         if (telegramResponseDTO.getResult().size() > 0) {
             if (telegramResponseDTO.getResult().get(0).getMessageDTO() != null) {
                 TelegramUpdateDTO telegramUpdateDTO = telegramResponseDTO.getResult().get(0);
-                log.info(telegramUpdateDTO.toString());
-                telegramUpdateDTO.getMessageDTO().setDate(telegramUpdateDTO.getMessageDTO().getDate() * 1000);
                 offset = telegramUpdateDTO.getUpdateId() + 1;
                 return telegramUpdateDTO;
             } else {
