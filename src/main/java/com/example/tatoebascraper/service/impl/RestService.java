@@ -28,7 +28,7 @@ public class RestService {
                 " > div.sentence-and-translations.md-whiteframe-1dp";
         Elements elements = null;
         int page = (int) Math.floor((Math.random() * 3) + 1);
-        int wordOfPage = (int) Math.floor((Math.random() * 10));
+        int wordOfPage = (int) Math.floor((Math.random() * 3) + 1);
         HashMap<String, String> response1 = recursiveMethod(from, to, word, response, xpath, page, wordOfPage);
         if (response1 != null) return response1;
         response.put("Translation not found", "");
@@ -36,6 +36,7 @@ public class RestService {
     }
 
     private HashMap<String, String> recursiveMethod(String from, String to, String word, HashMap<String, String> response, String xpath, int page, int wordOfPage) throws IOException {
+        System.out.println("limit : " + limit);
         limit--;
         if (limit > 0) {
             try {
@@ -43,7 +44,9 @@ public class RestService {
                 if (response1 != null) return response1;
             } catch (Exception e) {
                 wordOfPage = (int) Math.floor((Math.random() * 3) + 1);
-                page = (int) Math.floor((Math.random() * 10));
+                page = (int) Math.floor((Math.random() * 3) + 1);
+                System.out.println("page : " + page);
+                System.out.println("wordOfPage : " + wordOfPage);
                 HashMap<String, String> response1 = recursiveMethod(from, to, word, response, xpath, page, wordOfPage);
                 if (response1 != null) return response1;
                 response.put("Translation not found", "");
@@ -58,6 +61,7 @@ public class RestService {
         String url = tatoebaUrl + "from=" + from + "&query=" + word + "&to=" + to + "&page=" + page;
         Document doc = Jsoup.connect(url).get();
         elements = doc.select(xpath);
+        System.out.println(doc.outerHtml());
         Element element = elements.get(wordOfPage);
         boolean b = element.hasAttr("ng-init");
         if (b) {
@@ -67,7 +71,12 @@ public class RestService {
             String result = s2[0];
 
             TatoebaData student = new ObjectMapper().readValue(result, TatoebaData.class);
-            response.put(student.getText(), student.getTranslations().get(0).get(0).text);
+
+            try {
+                response.put(student.getText(), student.getTranslations().get(0).get(0).text);
+            } catch (Exception e){
+                response.put(student.getText(), student.getTranslations().get(1).get(0).text);
+            }
             return response;
         }
         return null;
